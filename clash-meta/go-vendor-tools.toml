@@ -1,10 +1,20 @@
 [archive]
 
+
+post_commands = [
 # github.com/metacubex/chacha is actually a copy of chacha and poly1305 from github.com/aead, which is MIT licensed
 # it seems to be some internal used dependency
 # and clash-meta itself is MIT licensed too, so I treat this as MIT.
-post_commands = [
-    ["cp","vendor/github.com/metacubex/chacha/poly1305/LICENSE","vendor/github.com/metacubex/chacha/LICENSE"]
+    ["cp","vendor/github.com/metacubex/chacha/poly1305/LICENSE","vendor/github.com/metacubex/chacha/LICENSE"],
+
+# Note: Removing "// import" to pass check
+# Upstream: https://github.com/golang/go/issues/37747
+# Similar to https://github.com/containers/podman/issues/10009
+# _build/src/github.com/metacubex/mihomo/vendor/github.com/RyuaNerin/go-krypto/lea/cipher_cbc.go:8:2: code in directory /builddir/build/BUILD/mihomo-1.18.7/_build/src/github.com/metacubex/mihomo/vendor/github.com/RyuaNerin/go-krypto/internal/subtle expects import "crypto/internal/subtle"
+# _build/src/github.com/metacubex/mihomo/vendor/github.com/metacubex/chacha/chachapoly1305/chacha20poly1305.go:15:2: code in directory /builddir/build/BUILD/mihomo-1.18.7/_build/src/github.com/metacubex/mihomo/vendor/github.com/metacubex/chacha/poly1305 expects import "github.com/aead/poly1305"
+# actually identified as "github.com/metacubex/chacha/poly1305"
+    ["bash", "-c",'''sed --follow-symlinks -i 's/\/\/ \s*import \s*".*"//' vendor/github.com/RyuaNerin/go-krypto/internal/subtle/*.go'''],
+    ["bash", "-c",'''sed --follow-symlinks -i 's/\/\/ \s*import \s*".*"//' vendor/github.com/metacubex/chacha/poly1305/*.go''']  
 ]
 
 [archive.dependency_overrides]
