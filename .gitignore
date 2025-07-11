@@ -1,0 +1,4 @@
+*.rpm
+*/result_*
+*.log
+*.tar.*
