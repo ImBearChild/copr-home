@@ -3,7 +3,7 @@
 
 # https://github.com/kopia/kopia
 %global goipath         github.com/kopia/kopia
-Version:                0.21.1
+Version:                0.22.2
 
 %gometa -L -f
 
@@ -27,12 +27,14 @@ BuildRequires:  go-vendor-tools
 # for go test
 BuildRequires:  openssh
 
+# for external storage support
+Recommends:     rclone
+
 %description %{common_description}
 
 %prep
 %goprep -A
 %setup -q -T -D -a1 %{forgesetupargs}
-
 
 %generate_buildrequires
 %go_vendor_license_buildrequires -c %{S:2}
@@ -44,10 +46,6 @@ export LDFLAGS=" \
     -X github.com/kopia/kopia/repo.BuildGitHubRepo=kopia/kopia"
 
 %gobuild -o %{gobuilddir}/bin/kopia %{goipath}
-
-# for cmd in repo/maintenance tools/cli2md tools/gettool; do
-#   %gobuild -o %{gobuilddir}/bin/$(basename $cmd) %{goipath}/$cmd
-# done
 
 %install
 %go_vendor_license_install -c %{S:2}
