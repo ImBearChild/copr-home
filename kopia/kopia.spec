@@ -3,7 +3,7 @@
 
 # https://github.com/kopia/kopia
 %global goipath         github.com/kopia/kopia
-Version:                0.21.1
+Version:                0.22.3
 
 %gometa -L -f
 
