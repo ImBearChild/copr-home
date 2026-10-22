@@ -2,6 +2,12 @@
 
 [licensing]
 detector = "askalono"
+# License texts for the npm libraries bundled in the pre-generated HTML UI.
+# Listed manually because this file is not part of the Go vendor tree.
+[[licensing.licenses]]
+path = "htmlui-npm-licenses.txt"
+sha256sum = "4382f2bcdabe6195a7c35caaf8c335177736e2507dcfcd704704096da7803f47"
+expression = "0BSD AND Apache-2.0 AND BSD-3-Clause AND CC-BY-4.0 AND MIT"
 [[licensing.licenses]]
 path = "vendor/gopkg.in/yaml.v3/LICENSE"
 sha256sum = "d18f6323b71b0b768bb5e9616e36da390fbd39369a81807cca352de4e4e6aa0b"
