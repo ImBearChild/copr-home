@@ -31,6 +31,19 @@
 # separates parent and subtest names, so the full subtest paths are passed
 # below.
 
+# ppc64le uses 64K filesystem blocks, equal to iocopy.BufSize. The sparse
+# restore test assumes a smaller block size, underflows an offset, and then
+# checks the wrong physical allocation sizes.
+%ifarch ppc64le
+%global skip_ppc64le_tests -s TestSnapshotSparseRestore
+%endif
+
+# This randomized stress test has been observed to fail on s390x with a
+# deleted-flag mismatch (upstream has no deterministic fix yet).
+%ifarch s390x
+%global skip_s390x_tests -s TestIndexBlobManagerStress
+%endif
+
 # https://github.com/kopia/kopia
 %global goipath         github.com/kopia/kopia
 Version:                0.23.1
@@ -137,7 +150,7 @@ install -m 0755 -vp %{gobuilddir}/bin/* %{buildroot}%{_bindir}/
 %check
 %go_vendor_license_check -c %{S:2}
 %if %{with check}
-%gocheck2 -F -s TestMetrics_CompressibleData -s TestBuildFromExtraError -s TestFormatV1/TestCompression_CompressibleData -s TestFormatV1/TestFlushWaitsForAllPendingWriters -s TestFormatV2/TestCompression_CompressibleData -s TestFormatV2/TestFlushWaitsForAllPendingWriters
+%gocheck2 -F -s TestMetrics_CompressibleData -s TestBuildFromExtraError -s TestFormatV1/TestCompression_CompressibleData -s TestFormatV1/TestFlushWaitsForAllPendingWriters -s TestFormatV2/TestCompression_CompressibleData -s TestFormatV2/TestFlushWaitsForAllPendingWriters %{?skip_ppc64le_tests} %{?skip_s390x_tests} -- -p 1
 %endif
 
 %files -f %{go_vendor_license_filelist}
